@@ -13,7 +13,7 @@ clear variables;
 
 %scipath = 'F:\Sciatica_01292019_W03_R03_R04_R05_R06\spaciotemporal\scianalysis';
 
-scipath = 'D:\NP cohort 2\00_21112020_baseline\DLC_related\excel';
+scipath = 'E:\try 2 videos\excel_output_from_DLC';
 
 %scipath = 'C:\Users\Brandon\Dropbox (UFL)\OrthoBME Lab Team Folder\Lab 1-on-1 Meetings\Savannah\Sample Videos from Kiara\dlcanalysis'
 %scipath = 'C:\Users\Brandon\Dropbox (UFL)\OrthoBME Lab Team Folder\Lab 1-on-1 Meetings\Savannah\Sample Videos from Kiara\dlcanalysis2'
