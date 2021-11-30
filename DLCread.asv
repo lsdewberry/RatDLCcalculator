@@ -86,9 +86,10 @@ for filenum = 1:3 %size(files, 1)
         legend('Location','eastoutside');
         fig1.Position=[0,40,1000,1000-40];
         set(gca,'LooseInset',get(gca,'TightInset'));
-        % the force plate points 
-          plot(median(frame(ABforcePlateCenterl>(L))),median(ABforcePlateCenterx(ABforcePlateCenterl>(L)))/10,'o','DisplayName','ABforcePlateCenter/10');
-          plot(median(frame(CDforcePlateCenterl>(L))),median(CDforcePlateCenterx(CDforcePlateCenterl>(L)))/10,'o','DisplayName','CDforcePlateCenter/10');
+        % the force plate points (below) don't work very well so I commented them
+        % out, still hoping I can add them back one day.
+        %  plot(min(frame(ABforcePlateCenterl>(L-0.1))),mean(ABforcePlateCenterx(ABforcePlateCenterl>(L-0.1))),'o','DisplayName','ABforcePlateCenter');
+        %  plot(min(frame(CDforcePlateCenterl>(L-0.1))),mean(CDforcePlateCenterx(CDforcePlateCenterl>(L-0.1))),'o','DisplayName','CDforcePlateCenter');
         fig2 = figure(2); hold on; % figure for average stride
         xlabel('% stride from frame with toe off to next frame with toe off');
         legend('Location','eastoutside');
@@ -384,14 +385,13 @@ sdxdf = filtfilt(d1, dxdf);
 % sddxdf = gradient(sdxdf(:)) ./ gradient(f(:));
 % [pks,toeoff] = findpeaks(sddxdf,f, 'MinPeakWidth',25,'MinPeakDistance',75); %used to find temporal measures   
 %when derivative is higher than 0, it's in swing
-stance=(-directionfactor*sdxdf)>-0.3;
+stance=(-directionfactor*sdxdf)>-.5;
 [sstance,TF] = rmoutliers(double(stance),'movmedian',5); %remove outliers in sliding window
 f2=f(~TF);
 sstance(end)=0;%  I make it go back down to 0 so that counts as a stride because then it's easy to just never count the last stride.
 offsetforgraphing=rand(1);%I offset the stride/stance so that I can look at multiple stride/stance at once and they don't overlap
 
 [pks,toestrike] = findpeaks(double(sstance),f2, 'MinPeakWidth',10,'MinPeakDistance',70); %used to find temporal measures %toestrike is frame
-toestrike = toestrike-
 if length(toestrike)<=1
     dutyfactor=nan; stridelength=nan;strides=nan;
     numcycles=nan; datasnew=nan;percentfsnew=nan;
