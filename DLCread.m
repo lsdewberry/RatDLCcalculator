@@ -45,9 +45,9 @@ d2 = designfilt('lowpassiir','FilterOrder',3,'HalfPowerFrequency',0.04,'DesignMe
 
 %counter, should be same as filenum.
 i=1;
-for filenum = 1:3 %size(files, 1)
+for filenum = 1:size(files, 1)
     close all
-    spotcheck = 1; %round(rand(1)*rand(1)); %Loud or quiet - do you want it to graph stuff.
+    spotcheck = round(rand(1)*rand(1)); %Loud or quiet - do you want it to graph stuff.
     pausevalue = 1; %if I want to pause after graphing each few lines. Otherwise it graphs all quick.
     %% import excel files
     myfile = files(filenum).name
@@ -384,14 +384,14 @@ sdxdf = filtfilt(d1, dxdf);
 % sddxdf = gradient(sdxdf(:)) ./ gradient(f(:));
 % [pks,toeoff] = findpeaks(sddxdf,f, 'MinPeakWidth',25,'MinPeakDistance',75); %used to find temporal measures   
 %when derivative is higher than 0, it's in swing
-stance=(-directionfactor*sdxdf)>-0.3;
+stance=(-directionfactor*sdxdf)>-0.1;
 [sstance,TF] = rmoutliers(double(stance),'movmedian',5); %remove outliers in sliding window
 f2=f(~TF);
 sstance(end)=0;%  I make it go back down to 0 so that counts as a stride because then it's easy to just never count the last stride.
 offsetforgraphing=rand(1);%I offset the stride/stance so that I can look at multiple stride/stance at once and they don't overlap
 
 [pks,toestrike] = findpeaks(double(sstance),f2, 'MinPeakWidth',10,'MinPeakDistance',70); %used to find temporal measures %toestrike is frame
-toestrike = toestrike-
+%toestrike = toestrike-
 if length(toestrike)<=1
     dutyfactor=nan; stridelength=nan;strides=nan;
     numcycles=nan; datasnew=nan;percentfsnew=nan;
