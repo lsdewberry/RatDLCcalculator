@@ -41,20 +41,20 @@ Allfields = Allfields(filtindex,:,:);
 % Allfields(feilds,1,trials)includes every rat,tp, etc
 % rename rat name to ratname_s if it's a stimulated trial
 Sindex = find(cell2mat(squeeze(Allfields(strcmp('stim',fnames),:,:))));
-Allfields(strcmp('animal',fnames),:,Sindex)= strcat(Allfields(strcmp('animal',fnames),:,Sindex),'s');
+Allfields(strcmp('rat',fnames),:,Sindex)= strcat(Allfields(strcmp('rat',fnames),:,Sindex),'s');
 Allfields(strcmp('group',fnames),:,Sindex)= strcat(Allfields(strcmp('group',fnames),:,Sindex),'s');
 
 %clear output %commented out for easy testing
 %% group trials for each rat/timepoint
-rats   = unique(Allfields(strcmp(   'animal', fnames),:,:));% find rat names
+rats   = unique(Allfields(strcmp(   'rat', fnames),:,:));% find rat names
 groups = unique(Allfields(strcmp( 'group', fnames),:,:));% find group names
-tps    = unique(Allfields(strcmp('tp', fnames),:,:));% find daysPO timepoints
+tps    = unique(Allfields(strcmp('daysPO', fnames),:,:));% find daysPO timepoints
 tps=tps([1,4,2,3]);
 vars = {'x','y','f'};
 for r=1:length(rats)
-    Rindex  =strcmp(Allfields(strcmp(   'animal', fnames),:,:),rats{r});%find trials for selected rat_s
+    Rindex  =strcmp(Allfields(strcmp(   'rat', fnames),:,:),rats{r});%find trials for selected rat_s
         for tp=1:length(tps)
-            TPindex =strcmp(Allfields(strcmp('tp', fnames),:,:),tps{tp});%find trials where daysPO is tp
+            TPindex =strcmp(Allfields(strcmp('daysPO', fnames),:,:),tps{tp});%find trials where daysPO is tp
             filtindex = Rindex & TPindex;
             if sum(filtindex)==0
                 continue
