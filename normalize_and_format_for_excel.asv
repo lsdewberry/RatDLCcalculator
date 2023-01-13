@@ -1,16 +1,27 @@
-
+maxHTy=NaN(size(output,2),1);
+df=NaN(size(output,2),1);
+stridelength = NaN(size(output,2),1);
+toeProm = NaN(size(output,2),1);
+heelProm = NaN(size(output,2),1);
+stepwidth = NaN(size(output,2),1);
+avgV = NaN(size(output,2),1);
+FootAngleToeOff= NaN(size(output,2),1);
+stanceDuration= NaN(size(output,2),1);
 for i=1:length(output)
     try
-    table(i).fileName = output(i).filname;
-    table(i).note = output(i).byEye;
-    table(i).numberOfCycles = output(i).numcycles;
-    table(i).direction = output(i).direction;
-     output(i).velocityNose =  ( abs(gradient(output(i).N.x.avg)) ) ./ (gradient(output(i).N.f.avg));%pixels per frame
-    table(i).avgVnose = mean(output(i).velocityNose);
-     output(i).velocityBack =  ( abs(gradient(output(i).B.x.avg)) ) ./ (gradient(output(i).B.f.avg));%pixels per frame
-    table(i).avgVback = mean(output(i).velocityBack);
-    table(i).AverageVelocityN = output(i).AverageVelocity;
+    %output(i).velocity =  ( abs(gradient(output(i).N.x.avg)) ./ output(i).pixpercm ) ./ (gradient(output(i).N.f.avg) ./500);
+    %%output(i).velocityB =  ( abs(gradient(output(i).B.x.avg)) ./ output(i).pixpercm ) ./ (gradient(output(i).B.f.avg) ./500);
+    %output(i).velocitystd = std(output(i).velocity);
+    output(i).velocity =  ( abs(gradient(output(i).N.x.avg)) ) ./ (gradient(output(i).N.f.avg));%pixels per frame
+    table(i).avgVnose = mean(output(i).velocity);
+    output(i).velocityBac =  ( abs(gradient(output(i).B.x.avg)) ) ./ (gradient(output(i).B.f.avg));%pixels per frame
+    table(i).avgVback = mean(output(i).velocity);
+         %velocity = (Nx(end)-Nx(1))/pixeltocm; %distance in pixels*cm/pix = cm
+         %velocity = velocity/((Nf(end)-Nf(1))/framestosecs); %cm/ frames*s/frames=s)->cm/s
+
     table(i).maxHTy = max(output(i).HT.y.avg);
+    %output(i).Hstridelength=output(i).Hstridelength.avg/output(i).pixpercm;
+    
     table(i).df = output(i).Hdutyfactor.avg;
     table(i).stridelength = output(i).Hstridelength.avg;
     table(i).toeProm = output(i).ToeProminance.avg;

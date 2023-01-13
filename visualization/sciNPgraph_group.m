@@ -35,6 +35,9 @@ Allfields = Allfields(:,:,filtindex);
 % filter by number of cycles
 filtindex =cell2mat(Allfields(strcmp('numcycles', fieldnames(output)),:,:))>=3;
 Allfields = Allfields(:,:,filtindex);
+% filter by visual examination
+filtindex =cell2mat(Allfields(strcmp('byEye', fieldnames(output)),:,:))>=3;
+Allfields = Allfields(:,:,filtindex);
 % filter by variable selected
 clear filtindex
 fnames = {var2examine, 'rat','group','stim','daysPO'};

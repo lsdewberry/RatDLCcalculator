@@ -1,5 +1,10 @@
-%sciread group averages - xyf
+%sciread group averages
 
+
+%
+%do 1 condition at a time (timepoint) 
+% velocity
+%do it for bln, on, off blend all rats, all timepoints
 %% load in/initialize
 close all;
 %load('sciread_output.mat')
@@ -30,9 +35,12 @@ Allfields = Allfields(:,:,filtindex);
 % filter by number of cycles
 filtindex =cell2mat(Allfields(strcmp('numcycles', fieldnames(output)),:,:))>=3;
 Allfields = Allfields(:,:,filtindex);
+% filter by visual examination
+filtindex =cell2mat(Allfields(strcmp('byEye', fieldnames(output)),:,:))>=3;
+Allfields = Allfields(:,:,filtindex);
 % filter by variable selected
 clear filtindex
-fnames = {var2examine, 'animal','group','stim','tp'};
+fnames = {var2examine, 'rat','group','stim','daysPO'};
 for f=1:length(fnames)
 filtindex(f,:) =strcmp(fnames{f}, fieldnames(output));
 end

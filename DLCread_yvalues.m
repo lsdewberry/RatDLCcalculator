@@ -13,7 +13,7 @@
 
 %scipath = 'F:\Sciatica_01292019_W03_R03_R04_R05_R06\spaciotemporal\scianalysis';
 
-scipath = 'E:\excel_output_from_DLC_gait3';
+scipath = 'F:\Baseline_vagotomy_carlos\all DLC excel files';
 
 %scipath = 'C:\Users\Brandon\Dropbox (UFL)\OrthoBME Lab Team Folder\Lab 1-on-1 Meetings\Savannah\Sample Videos from Kiara\dlcanalysis'
 %scipath = 'C:\Users\Brandon\Dropbox (UFL)\OrthoBME Lab Team Folder\Lab 1-on-1 Meetings\Savannah\Sample Videos from Kiara\dlcanalysis2'
@@ -23,7 +23,7 @@ scipath = 'E:\excel_output_from_DLC_gait3';
 
 %%
 files = dir(scipath);
-files = files(3:end);%should be 3
+files = files(4:end);%should be 3
 
  pixeltocm=15; %this is a rough value used to calculate a rough velocity. The real pixtocm varied for each day.
 framestosecs = 500/1; %frames/sec - I ended up just getting pixels/frame
@@ -47,7 +47,7 @@ d2 = designfilt('lowpassiir','FilterOrder',3,'HalfPowerFrequency',0.04,'DesignMe
 i=1;
 %output(size(files, 1)) = struct();
         
-for filenum = 7 %1:size(files, 1)
+for filenum =1:size(files, 1)
     i=filenum;
     close all
     spotcheck = 1; %round(rand(1)*rand(1)); %Loud or quiet - do you want it to graph stuff.
@@ -293,10 +293,34 @@ for filenum = 7 %1:size(files, 1)
             end
         end
         
-    %velocity
-        velocity = (Nx(end)-Nx(1))/pixeltocm; %distance in pixels*cm/pix = cm
-        velocity = velocity/((Nf(end)-Nf(1))/framestosecs); %cm/ frames*s/frames=s)->cm/s
-        output(i).velocity = abs(velocity);
+     %velocity
+     velocity = (Nx(end)-Nx(1))/pixeltocm; %distance in pixels*cm/pix = cm
+     velocity = velocity/((Nf(end)-Nf(1))/framestosecs); %cm/ frames*s/frames=s)->cm/s
+     output(i).velocity = abs(velocity);
+        
+     %stepwidth = 
+     MRHy= -MirrorRightHindy(MirrorRightHindl>L); MLHy=-MirrorLeftHindy(MirrorLeftHindl>L);
+     MRHf=  frame(MirrorRightHindl>L);MLHf=  frame(MirrorLeftHindl>L);
+     [sMRHy,~, sMRHf] = basiccmooth(MRHy,MRHy,MRHf, d1);%using og filter
+     [sMLHy,~, sMLHf] = basiccmooth(MLHy,MLHy,MLHf, d1);%using og filterdelength.avg = mean(abs(MirrorRightHindy(strideIndex(:,1))-MirrorRightHindy(strideIndex(:,2))));
+     
+     [~,locsR] = findpeaks(-sMRHy,sMRHf,'MinPeakProminence',4,'MinPeakDistance',25,'Annotate','extents');
+     [~,locsL] = findpeaks(-sMLHy,sMLHf,'MinPeakProminence',4,'MinPeakDistance',25,'Annotate','extents');
+     locsR=[sMRHf(1);locsR];
+     locsL=[sMLHf(1);locsL];
+     locs=min([length(locsR),length(locsL)]);
+     selectedR=NaN(locs-1,1);selectedL=NaN(locs-1,1);
+     for n=1:length(locs)-1
+        [~,interum] = min(abs(sMRHf-mean([locsR(n),locsR(n+1)])));
+        selectedR(n) = sMRHy(interum);
+        [~,interum] = min(abs(sMLHf-mean([locsL(n),locsL(n+1)])));
+        selectedL(n) = sMLHy(interum);
+     end   
+     output(i).stepwidth.variability  = max([std(selectedR),std(selectedL)]);
+     output(i).stepwidth.avg = abs(mean(selectedR)-mean(selectedL));
+     
+     
+
 
 %     %% output variables
 %     output(i).numcycles     = Hnumcycles;
@@ -447,7 +471,7 @@ if spotcheck
             plot(0,0,'Color',color,'DisplayName',[name,' toestrike']); %just for the legend info
         plot(strides',[(ones(size(stridelengthF))-1.1)*100-offsetforgraphing*2,ones(size(stridelengthF))*100+offsetforgraphing*2]','Color',color*(2.2/3),'HandleVisibility','off');%toeoff 
     
-    byEye = input('Are the strides accurate? y, n, or e for edit.','s');
+    byEye = '-'; %input('Are the strides accurate? y, n, or e for edit.','s');
     if byEye == 'e'
         strides = [toestrike(1:end-1),toestrike(2:end)]
         stridesToUse = input('choose stride indecies to use in []');
@@ -457,6 +481,8 @@ if spotcheck
     else val =1;
     end
     end
+else 
+         byEye = '-';
 end
 dutyfactor=[];
 stridelength=[];
